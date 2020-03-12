@@ -1,5 +1,5 @@
 import numpy as np
-from math import exp
+from math import exp, sqrt
 #Defining the MLP
 class MLP:
 
@@ -13,6 +13,9 @@ class MLP:
         #Generate the layers of edges, add them to the list
         for i in range(layers-1):
             self.edgeLayers.append(EdgeLayer(self.nodeLayers[i], self.nodeLayers[i+1]))
+
+        #assign random weights and biases
+        self.setRandomWeightsBiases()
 
     def setInputs(self, inputVector):
         #Check correct number of inputs given
@@ -47,6 +50,24 @@ class MLP:
             currBiases = np.array(self.nodeLayers[i+1].nodeBiases).transpose()
             nextValues = calculateForwardValues(currValues, currWeights, currBiases)
             self.nodeLayers[i+1].nodeValues = nextValues
+
+    def setRandomWeightsBiases(self):
+        #Generate a random weight/bias using numpy gaussian
+        for x in range(len(self.edgeLayers)):
+            #Generate a new weight matrix or edgelayer x
+            newWeightMatrix = []
+            #weights into j
+            for j in range(len(self.nodeLayers[x+1].nodeValues)):
+                noWeightsIn = len(self.nodeLayers[x].nodeValues)
+                newWeights = []
+                #Generate a weight for each input weight
+                for i in range(noWeightsIn):
+                    newWeights.append(np.random.normal(loc=0, scale=(1/sqrt(noWeightsIn))))
+                newWeightMatrix.append(newWeights)
+                #bias of j
+                self.nodeLayers[x+1].nodeBiases[j] = np.random.normal(loc=0, scale=(1/sqrt(noWeightsIn)))
+
+            self.edgeLayers[x].weights = newWeightMatrix
 
 
     #Print a text representation of the MLP (for debug etc)
