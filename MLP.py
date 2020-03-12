@@ -39,7 +39,6 @@ class MLP:
 
     #Run a forward pass through the network
     def forwardPass(self):
-
         #Calculate the activations for the next node later
         def calculateForwardValues(values, weights, biases):
             def sigmoid(x):
@@ -55,6 +54,9 @@ class MLP:
             currBiases = np.array(self.nodeLayers[i+1].nodeBiases).transpose()
             nextValues = calculateForwardValues(currValues, currWeights, currBiases)
             self.nodeLayers[i+1].nodeValues = nextValues
+
+        #return the output
+        return self.nodeLayers[len(self.nodeLayers)-1].nodeValues
 
     #Run a backward pass through the network
     def backwardPass(self, correct):
